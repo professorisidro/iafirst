@@ -108,7 +108,7 @@ const Index = () => {
       <footer className="py-12 border-t bg-white">
         <div className="max-w-5xl mx-auto px-4 text-center space-y-4">
           <p className="text-slate-400 text-sm">© 2024 ISI AI-FIRST. Todos os direitos reservados.</p>
-          <MadeWithDyad />
+          <!-- <MadeWithDyad /> -->
         </div>
       </footer>
     </div>
