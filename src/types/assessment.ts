@@ -19,6 +19,7 @@ export interface DimensionScore {
 
 export interface AssessmentResult {
   companyInfo: CompanyInfo;
+  answers: Record<string, number>;
   dimensionScores: DimensionScore[];
   overallScore: number;
   maturityLevel: MaturityLevel;

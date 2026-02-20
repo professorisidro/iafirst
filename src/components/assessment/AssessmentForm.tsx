@@ -64,6 +64,7 @@ const AssessmentForm = ({ onComplete }: AssessmentFormProps) => {
 
     return {
       companyInfo,
+      answers,
       dimensionScores,
       overallScore,
       maturityLevel,
@@ -90,7 +91,6 @@ const AssessmentForm = ({ onComplete }: AssessmentFormProps) => {
       window.scrollTo(0, 0);
     } else {
       const result = calculateResults();
-      showSuccess("Diagnóstico concluído com sucesso!");
       onComplete(result);
     }
   };

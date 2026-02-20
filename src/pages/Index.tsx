@@ -5,15 +5,39 @@ import AssessmentForm from '../components/assessment/AssessmentForm';
 import ReportView from '../components/assessment/ReportView';
 import { AssessmentResult } from '../types/assessment';
 import { MadeWithDyad } from "@/components/made-with-dyad";
-import { ShieldCheck, BarChart3, Target } from 'lucide-react';
+import { ShieldCheck, BarChart3, Target, Loader2 } from 'lucide-react';
+import { supabase } from "@/integrations/supabase/client";
+import { showSuccess, showError } from '../utils/toast';
 
 const Index = () => {
   const [result, setResult] = useState<AssessmentResult | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
 
-  const handleComplete = (data: AssessmentResult) => {
-    setResult(data);
-    // Aqui poderíamos salvar no Supabase
-    console.log("Resultado para persistência:", data);
+  const handleComplete = async (data: AssessmentResult) => {
+    setIsSaving(true);
+    try {
+      const { error } = await supabase
+        .from('assessment_results')
+        .insert([
+          {
+            company_info: data.companyInfo,
+            answers: data.answers,
+            dimension_scores: data.dimensionScores,
+            overall_score: data.overallScore,
+            maturity_level: data.maturityLevel
+          }
+        ]);
+
+      if (error) throw error;
+
+      showSuccess("Diagnóstico salvo com sucesso!");
+      setResult(data);
+    } catch (error: any) {
+      console.error("Erro ao salvar no Supabase:", error);
+      showError("Erro ao salvar os dados. Por favor, tente novamente.");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleReset = () => {
@@ -71,7 +95,14 @@ const Index = () => {
 
       {/* Form Section */}
       <main className="relative -mt-10 pb-20">
-        <AssessmentForm onComplete={handleComplete} />
+        {isSaving ? (
+          <div className="flex flex-col items-center justify-center py-20 space-y-4">
+            <Loader2 className="w-12 h-12 text-blue-600 animate-spin" />
+            <p className="text-slate-600 font-medium">Processando seu diagnóstico...</p>
+          </div>
+        ) : (
+          <AssessmentForm onComplete={handleComplete} />
+        )}
       </main>
 
       <footer className="py-12 border-t bg-white">
